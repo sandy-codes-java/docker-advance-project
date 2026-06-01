@@ -1,0 +1,52 @@
+services:
+
+  app:
+    build: .
+    container_name: spring-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/assignment_schema
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "true"
+
+    networks:
+      - my-network
+    volumes:
+      - app-logs:/app/logs
+      - ./config:/app/config
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: assignment_schema
+    ports:
+      - "3307:3306"
+    networks:
+      - my-network
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 50s
+      retries: 50
+
+networks:
+  my-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
+  app-logs:
