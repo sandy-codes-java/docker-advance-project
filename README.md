@@ -19,10 +19,9 @@ docker compose version
 
 # ▶ Steps to Run the Application
 
-### 1. Clone the repository
+### 1. created the repository
 ```bash
-git clone <your-repo-url>
-cd <project-folder>
+https://github.com/sandy-codes-java/docker-advance-project
 ```
 
 ### 2. Build and start containers
